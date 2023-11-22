@@ -80,5 +80,5 @@ class ChatClient:
         self.sock.send(f"{self.joined_room}:{self.username}: {message}".encode())
 
 if __name__ == "__main__":
-    client = ChatClient('65.0.130.62', 8000)  # Change the server address as needed
+    client = ChatClient('65.0.130.62', 6000)
     client.start()

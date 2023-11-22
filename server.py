@@ -125,6 +125,6 @@ class ChatServer:
         })
 
 if __name__ == "__main__":
-    server = ChatServer('0.0.0.0', 8000)
+    server = ChatServer('0.0.0.0', 6000)
     server.start()
 

@@ -1,11 +1,12 @@
 
 #OUTPUT
 
-![Screenshot (29)](https://github.com/vaishnavikapile22/cli-based-chat-tool/assets/149785862/b247d222-78da-423f-8067-6d6dc508002f)
-![Screenshot (27)](https://github.com/vaishnavikapile22/cli-based-chat-tool/assets/149785862/e8dd2f85-66eb-45d7-a330-60efe5ec91da)
-![Screenshot (28)](https://github.com/vaishnavikapile22/cli-based-chat-tool/assets/149785862/acaf8a3b-dcfa-44c0-8bc2-85077287817f)
 
-here A and B join same room and chat each other but D can't see any chat of 101 room D join different room 106 all room connect to common server
+![Screenshot (30)](https://github.com/vaishnavikapile22/cli-based-chat-tool/assets/149785862/472df9da-f300-4865-9182-0ed0b8244dec)
+![b](https://github.com/vaishnavikapile22/cli-based-chat-tool/assets/149785862/5c0fc79c-da50-42fd-8ffa-4f26bf11226c)
+![Screenshot (27)](https://github.com/vaishnavikapile22/cli-based-chat-tool/assets/149785862/e8dd2f85-66eb-45d7-a330-60efe5ec91da)
+
+here Y and B join same room and chat each other but D can't see any chat of 101 room D join different room 106 all room connect to common server
 
 CEREATE A INSRTANCE
 

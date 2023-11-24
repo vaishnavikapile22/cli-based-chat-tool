@@ -1,12 +1,13 @@
 import socket
 import threading
-import pymongo
 from pymongo import MongoClient
 
 class ChatRoom:
-    def __init__(self, room_id):
+    def __init__(self, room_id, db):
         self.room_id = room_id
         self.clients = []
+        self.messages = []
+        self.db = db
 
     def add_client(self, client_socket):
         self.clients.append(client_socket)
@@ -19,18 +20,24 @@ class ChatRoom:
             if client != sender_socket:
                 try:
                     client.send(message.encode())
-                except socket.error:
+                except socket.error as e:
+                    print(f"Error broadcasting message to a client: {e}")
                     self.remove_client(client)
 
+        # Save the message to MongoDB
+        self.messages.append(message)
+        self.db[self.room_id].insert_one({'message': message})
+
 class ChatServer:
-    def __init__(self, host, port):
+    def __init__(self, host, port, mongo_host='0.0.0.0', mongo_port=27017):
         self.host = host
         self.port = port
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.mongo_host = mongo_host
+        self.mongo_port = mongo_port
+        self.client = MongoClient(f'mongodb://{self.mongo_host}:{self.mongo_port}/')
+        self.db = self.client['chat_server']
         self.chat_rooms = {}
-        self.mongo_client = MongoClient('mongodb://65.0.130.62:27017/')
-        self.mongo_db = self.mongo_client['chat_database']
-        self.message_collection = self.mongo_db['messages']
 
     def start(self):
         self.sock.bind((self.host, self.port))
@@ -59,8 +66,8 @@ class ChatServer:
                 else:
                     self.handle_chat(client_socket, message)
 
-            except Exception as e:
-                print(f"Error: {e}")
+            except socket.error as e:
+                print(f"Error receiving data from client: {e}")
                 break
 
         print(f"Connection closed.")
@@ -90,7 +97,7 @@ class ChatServer:
 
     def create_chat_room(self, client_socket, room_id, username):
         if room_id not in self.chat_rooms:
-            chat_room = ChatRoom(room_id)
+            chat_room = ChatRoom(room_id, self.db)
             chat_room.add_client(client_socket)
             self.chat_rooms[room_id] = chat_room
             welcome_message = f"Welcome to the chat room '{room_id}', {username}!"
@@ -114,15 +121,6 @@ class ChatServer:
         for chat_room in self.chat_rooms.values():
             if client_socket in chat_room.clients:
                 chat_room.broadcast(client_socket, message)
-                
-                # Save the message to MongoDB
-                self.save_message(chat_room.room_id, message)
-
-    def save_message(self, room_id, message):
-        self.message_collection.insert_one({
-            'room_id': room_id,
-            'message': message
-        })
 
 if __name__ == "__main__":
     server = ChatServer('0.0.0.0', 6000)
